@@ -1,8 +1,10 @@
 import uuid
 import requests
 import logging
+import json
 
 log = logging.getLogger(__name__)
+
 
 class APIAIClient(object):
 
@@ -12,6 +14,7 @@ class APIAIClient(object):
         self.token = token
         self.lang = lang
         self.session_id = unicode(uuid.uuid4())
+        self._response = dict()
 
     @property
     def payload(self):
@@ -27,6 +30,14 @@ class APIAIClient(object):
             'content-type': 'application/json; charset=utf-8'
         }
 
+    @property
+    def speech(self):
+        return self._response.get("speech", "")
+
+    @property
+    def action(self):
+        return self._response.get("action")
+
     def run_query(self, query):
         payload = self.payload
         payload["query"] = query
@@ -36,7 +47,10 @@ class APIAIClient(object):
         p = requests.post(url, headers=self.headers, json=payload)
 
         if p.status_code == 200:
-            print p.content
+            json_response = json.loads(p.content)
+            # status_code = json_response.get(u'status', {}).get(u'code')
+
+            self._response = json_response.get("result", dict())
         else:
             log.warning("Request Error: %s" % p.status_code)
 

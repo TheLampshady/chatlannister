@@ -11,13 +11,21 @@ token = {
     "client": "APIAI_CLIENT_TOKEN",
 }
 
+def socialize(client):
+    chat = raw_input("%s: " % client.speech)
+    if not chat:
+        print "Don't be shy! Say something."
+        return True
+
+    client.run_query(chat)
+    if client.action == 'quit':
+        print client.speech or "Ciao"
+        return False
+
+    return True
 
 def parse_args():
     parser = argparse.ArgumentParser(description='I Talk and I Know Things.')
-    parser.add_argument('-q', '--query',
-                        dest='query', type=str,
-                        default="",
-                        help='Query for API.AI')
     parser.add_argument('-d', '--developer',
                         dest='developer', action='store_true',
                         help='Sets developer mode')
@@ -34,7 +42,15 @@ if __name__ == "__main__":
         exit(1)
 
     client = APIAIClient(token)
-    print client.run_query(args.query)
+
+    print "Hello I am Chation Lannister",
+    while socialize(client):
+        pass
+
+    exit(0)
+
+
+
 
 
 
