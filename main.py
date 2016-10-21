@@ -32,11 +32,19 @@ def parse_args():
 
     return parser.parse_args()
 
+def run_thyself(client):
+    try:
+        return socialize(client)
+    except KeyboardInterrupt as ki:
+        print "\nNice chatting with you!\nExiting..."
+        return False
+
 
 if __name__ == "__main__":
     args = parse_args()
     token_name = token["developer"] if args.developer else token["client"]
     token = os.getenv(token_name, None)
+
     if not token:
         logging.error("Environmental Variable Not Set: '%s'" % token_name)
         exit(1)
@@ -44,13 +52,9 @@ if __name__ == "__main__":
     client = APIAIClient(token)
 
     print "Hello I am Chation Lannister",
-    while socialize(client):
+
+    while run_thyself(client):
         pass
 
     exit(0)
-
-
-
-
-
 
